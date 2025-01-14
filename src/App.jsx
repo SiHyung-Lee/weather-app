@@ -11,17 +11,9 @@ import {
 
 function App() {
   const API_KEY = "1c6040609dd62a847ede395d2b820d43";
-  const [coord, setCoord] = useState({ lat: 37.5665, lon: 126.978 });
+  const [coord, setCoord] = useState({ lat: 51.5072, lon: -0.1275 });
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const initWeatherData = [
-    { time: "Now", temp: 32, icon: Sun },
-    { time: "4pm", temp: 30, icon: Sun },
-    { time: "5pm", temp: 28, icon: CloudSun },
-    { time: "6pm", temp: 26, icon: Cloud },
-    { time: "7pm", temp: 26, icon: Cloud },
-  ];
 
   useEffect(() => {
     (async function () {
@@ -60,33 +52,46 @@ function App() {
             {/* Main Weather Card */}
             <div className="bg-yellow-400 rounded-3xl px-6 py-8 text-white">
               <div className="space-y-1">
-                <h2 className="text-sm font-semibold">Central Jakarta</h2>
+                <h2 className="text-sm font-semibold">
+                  {weatherData.timezone}
+                </h2>
                 <p className="text-xs opacity-90">
-                  Today, May 17 2024 | 03:24PM
+                  Today, May 17 2024 | {weatherData.current.dt}
                 </p>
               </div>
 
               <div className="flex flex-col items-center mt-5">
-                <Sun size={230} strokeWidth={1.5} className="mb-8" />
-                <span className="text-6xl font-bold mb-3">32°</span>
-                <span className="text-2xl mb-2">Sunny</span>
-                <p className="text-sm">Sunblock is needed for you!</p>
+                <img
+                  src={`https://openweathermap.org/img/wn/${weatherData.current.weather[0].icon}@2x.png`}
+                  className="mb-8"
+                />
+                <span className="text-6xl font-bold mb-3">
+                  {weatherData.current.temp}°
+                </span>
+                <span className="text-2xl mb-2">
+                  {weatherData.current.weather[0].main}
+                </span>
+                <p className="text-sm">
+                  {weatherData.current.weather[0].description}
+                </p>
               </div>
             </div>
 
             {/* Hourly Forecast */}
             <div className="flex justify-between mt-4 px-2.5">
-              {initWeatherData.map((item, index) => {
-                const Icon = item.icon;
+              {weatherData.hourly.map((time, index) => {
                 return (
                   <div key={index} className="flex flex-col items-center">
                     <span className="flex items-center justify-center w-14 h-14 mb-3 rounded-full bg-gray-100">
-                      <Icon size={24} className="text-gray-600" />
+                      <img
+                        src={`https://openweathermap.org/img/wn/${time.weather[0].icon}@2x.png`}
+                        className="text-gray-600"
+                      />
                     </span>
                     <span className="mb-1 text-xs text-gray-600 font-bold">
-                      {item.time}
+                      {time.dt}
                     </span>
-                    <span className="text-xs">{item.temp}°</span>
+                    <span className="text-xs">{time.temp}°</span>
                   </div>
                 );
               })}
