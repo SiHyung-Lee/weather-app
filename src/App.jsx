@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
-import { Sun, Wind, Sunrise, Thermometer } from "lucide-react";
+import { Sun, Cloud, CloudSun, Wind, Sunrise, Thermometer } from "lucide-react";
 
 function App() {
   const API_KEY = "1c6040609dd62a847ede395d2b820d43";
   const [coord, setCoord] = useState({ lat: 37.5665, lon: 126.978 });
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  const initWeatherData = [
+    { time: "Now", temp: 32, icon: Sun },
+    { time: "4pm", temp: 30, icon: Sun },
+    { time: "5pm", temp: 28, icon: CloudSun },
+    { time: "6pm", temp: 26, icon: Cloud },
+    { time: "7pm", temp: 26, icon: Cloud },
+  ];
 
   useEffect(() => {
     (async function () {
@@ -28,33 +36,53 @@ function App() {
     <>
       {isLoading ? (
         <div className="flex items-center justify-center min-h-screen ">
-          <div className="text-xl text-gray-600">Loading...</div>
+          <div className="text-xl">Loading...</div>
         </div>
       ) : (
-        <>
-          <div className="min-h-screen ">
-            <header className=" p-6 md:p-8">
-              <div className="text-center">{weatherData.timezone}</div>
-              <div className="flex flex-col items-center justify-between mt-8">
-                <div className="flex items-center gap-4">
-                  {weatherData.current.weather[0].icon && (
-                    <img
-                      src={`https://openweathermap.org/img/wn/${weatherData.current.weather[0].icon}@2x.png`}
-                      alt={weatherData.current.weather[0].description}
-                      className="w-32 h-32 md:w-24 md:h-24"
-                    />
-                  )}
-                </div>
-                <div className="text-7xl md:text-8xl font-bold mb-8">
-                  {Math.round(weatherData.current.temp)}°
-                </div>
-                <p className="text-xl md:text-2xl capitalize">
-                  {weatherData.current.weather[0].description}
+        <div className="min-h-screen p-4">
+          <div className="max-w-md w-full space-y-8">
+            {/* App Header */}
+            <div className="flex justify-between items-center">
+              <h1 className="text-2xl font-bold">forecazt</h1>
+              <button className="text-gray-600">...</button>
+            </div>
+
+            {/* Main Weather Card */}
+            <div className="bg-yellow-400 rounded-3xl px-6 py-8 text-white">
+              <div className="space-y-1">
+                <h2 className="text-sm font-semibold">Central Jakarta</h2>
+                <p className="text-xs opacity-90">
+                  Today, May 17 2024 | 03:24PM
                 </p>
               </div>
-            </header>
+
+              <div className="flex flex-col items-center mt-5">
+                <Sun size={230} className="mb-8" />
+                <span className="text-6xl font-bold mb-3">32°</span>
+                <span className="text-2xl mb-2">Sunny</span>
+                <p className="text-sm">Sunblock is needed for you!</p>
+              </div>
+            </div>
+
+            {/* Hourly Forecast */}
+            <div className="flex justify-between mt-4 px-2.5">
+              {initWeatherData.map((item, index) => {
+                const Icon = item.icon;
+                return (
+                  <div key={index} className="flex flex-col items-center">
+                    <span className="flex items-center justify-center w-14 h-14 mb-3 rounded-full bg-gray-100">
+                      <Icon size={24} className="text-gray-600" />
+                    </span>
+                    <span className="mb-1 text-xs text-gray-600 font-bold">
+                      {item.time}
+                    </span>
+                    <span className="text-xs">{item.temp}°</span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
-        </>
+        </div>
       )}
     </>
   );
