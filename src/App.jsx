@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
-import { Sun, Cloud, CloudSun, Wind, Sunrise, Thermometer } from "lucide-react";
+import {
+  Ellipsis,
+  Sun,
+  Cloud,
+  CloudSun,
+  Wind,
+  Sunrise,
+  Thermometer,
+} from "lucide-react";
 
 function App() {
   const API_KEY = "1c6040609dd62a847ede395d2b820d43";
@@ -40,11 +48,13 @@ function App() {
         </div>
       ) : (
         <div className="min-h-screen p-4">
-          <div className="max-w-md w-full space-y-8">
+          <div className="max-w-md w-full space-y-4">
             {/* App Header */}
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold">forecazt</h1>
-              <button className="text-gray-600">...</button>
+              <button className="text-gray-600">
+                <Ellipsis size={25} />
+              </button>
             </div>
 
             {/* Main Weather Card */}
@@ -57,7 +67,7 @@ function App() {
               </div>
 
               <div className="flex flex-col items-center mt-5">
-                <Sun size={230} className="mb-8" />
+                <Sun size={230} strokeWidth={1.5} className="mb-8" />
                 <span className="text-6xl font-bold mb-3">32°</span>
                 <span className="text-2xl mb-2">Sunny</span>
                 <p className="text-sm">Sunblock is needed for you!</p>
