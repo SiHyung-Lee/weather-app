@@ -12,7 +12,11 @@ import {
 } from "lucide-react";
 
 const API_KEY = "1c6040609dd62a847ede395d2b820d43";
-const BASE_API_URL = "https://api.openweathermap.org/data/3.0/onecall";
+const API_HOST = "http://api.openweathermap.org";
+const API_ENDPOINTS = {
+  geo: "/geo/1.0/direct",
+  weather: "/data/3.0/onecall",
+};
 
 function formatDate(timestamp) {
   const date = new Date(timestamp * 1000);
@@ -75,33 +79,44 @@ function renderWeatherIcon(iconCode, size = 30) {
 }
 
 function App() {
-  // const [coord, setCoord] = useState({ lat: 51.5072, lon: -0.1275 }); // london
-  const [coord, setCoord] = useState({ lat: 37.566535, lon: 126.9779692 }); // seoul
+  const [city, setCity] = useState("london");
+  // const [coord, setCoord] = useState({ lat: 37.566535, lon: 126.9779692 }); // seoul
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    (async function () {
-      try {
-        const locationResponse = await fetch(
-          `http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid=${API_KEY}`,
-        );
-        const locationResults = await locationResponse.json();
-        console.log(locationResults[0]);
-        setCoord(locationResults[0]);
-        console.log(coord);
+  const fetchLocationData = async (city) => {
+    const response = await fetch(
+      `${API_HOST}${API_ENDPOINTS.geo}?q=${city}&limit=5&appid=${API_KEY}`,
+    );
+    return response.json();
+  };
 
-        const weatherResponse = await fetch(
-          `${BASE_API_URL}?lat=${coord.lat}&lon=${coord.lon}&appid=${API_KEY}&units=metric`,
-        );
-        const weatherResult = await weatherResponse.json();
-        setWeatherData(weatherResult);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+  const fetchWeatherData = async (lat, lon) => {
+    const response = await fetch(
+      `${API_HOST}${API_ENDPOINTS.weather}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`,
+    );
+    return response.json();
+  };
+
+  const loadWeatherData = async () => {
+    try {
+      const [locationData] = await fetchLocationData(city);
+      // setCoord(locationData);
+
+      const weatherData = await fetchWeatherData(
+        locationData.lat,
+        locationData.lon,
+      );
+      setWeatherData(weatherData);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadWeatherData();
   }, []);
 
   return (
@@ -113,15 +128,12 @@ function App() {
       ) : (
         <div className="min-h-screen p-4">
           <div className="max-w-md w-full space-y-4">
-            {/* App Header */}
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold">forecazt</h1>
               <button className="text-gray-600">
                 <Ellipsis size={25} />
               </button>
             </div>
-
-            {/* Main Weather Card */}
             <div className="bg-yellow-400 rounded-3xl px-6 py-7 text-white">
               <div className="space-y-1">
                 <h2 className="text-sm font-semibold">
@@ -148,7 +160,6 @@ function App() {
               </div>
             </div>
 
-            {/* Hourly Forecast */}
             <div className="flex justify-between mt-4 px-2.5">
               {weatherData.hourly.slice(0, 5).map((time, index) => {
                 return (
