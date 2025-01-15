@@ -3,27 +3,99 @@ import {
   Ellipsis,
   Sun,
   Cloud,
+  Cloudy,
   CloudSun,
-  Wind,
-  Sunrise,
-  Thermometer,
+  CloudSunRain,
+  CloudRain,
+  CloudLightning,
+  CloudSnow,
 } from "lucide-react";
 
+const API_KEY = "1c6040609dd62a847ede395d2b820d43";
+const BASE_API_URL = "https://api.openweathermap.org/data/3.0/onecall";
+
+function formatDate(timestamp) {
+  const date = new Date(timestamp * 1000);
+  const options = {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  };
+  const dateString = date.toLocaleString("en-US", options).replace(/,/g, "");
+  const [month, day, year, time, meridian] = dateString.split(" "); // 공백으로 분리
+  return (
+    <>
+      {month} {day} {year} <span className="mx-0.5">|</span> {time}
+      {meridian}
+    </>
+  );
+}
+
+function formatTime(timestamp) {
+  const date = new Date(timestamp * 1000);
+  const options = {
+    hour: "numeric",
+    hour12: true,
+  };
+  const dateString = date.toLocaleString("en-US", options).replace(/,/g, "");
+  const [time, meridian] = dateString.split(" "); // 공백으로 분리
+  return (
+    <>
+      {time}
+      {meridian.toLowerCase()}
+    </>
+  );
+}
+
+function renderWeatherIcon(iconCode, size = 30) {
+  const iconMapping = {
+    "01d": <Sun size={size} />,
+    "02d": <CloudSun size={size} />,
+    "03d": <Cloud size={size} />,
+    "04d": <Cloudy size={size} />,
+    "09d": <CloudRain size={size} />,
+    "10d": <CloudSunRain size={size} />,
+    "11d": <CloudLightning size={size} />,
+    "13d": <CloudSnow size={size} />,
+    "50d": <CloudSun size={size} />,
+    "01n": <Sun size={size} />,
+    "02n": <CloudSun size={size} />,
+    "03n": <Cloud size={size} />,
+    "04n": <Cloudy size={size} />,
+    "09n": <CloudRain size={size} />,
+    "10n": <CloudSunRain size={size} />,
+    "11n": <CloudLightning size={size} />,
+    "13n": <CloudSnow size={size} />,
+    "50n": <CloudSun size={size} />,
+  };
+  return iconMapping[iconCode];
+}
+
 function App() {
-  const API_KEY = "1c6040609dd62a847ede395d2b820d43";
-  const [coord, setCoord] = useState({ lat: 51.5072, lon: -0.1275 });
+  // const [coord, setCoord] = useState({ lat: 51.5072, lon: -0.1275 }); // london
+  const [coord, setCoord] = useState({ lat: 37.566535, lon: 126.9779692 }); // seoul
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     (async function () {
       try {
-        const response = await fetch(
-          `https://api.openweathermap.org/data/3.0/onecall?lat=${coord.lat}&lon=${coord.lon}&appid=${API_KEY}&units=metric`,
+        const locationResponse = await fetch(
+          `http://api.openweathermap.org/geo/1.0/direct?q=London&limit=5&appid=${API_KEY}`,
         );
-        const result = await response.json();
-        setWeatherData(result);
-        console.log(result);
+        const locationResults = await locationResponse.json();
+        console.log(locationResults[0]);
+        setCoord(locationResults[0]);
+        console.log(coord);
+
+        const weatherResponse = await fetch(
+          `${BASE_API_URL}?lat=${coord.lat}&lon=${coord.lon}&appid=${API_KEY}&units=metric`,
+        );
+        const weatherResult = await weatherResponse.json();
+        setWeatherData(weatherResult);
       } catch (error) {
         console.log(error);
       } finally {
@@ -50,21 +122,20 @@ function App() {
             </div>
 
             {/* Main Weather Card */}
-            <div className="bg-yellow-400 rounded-3xl px-6 py-8 text-white">
+            <div className="bg-yellow-400 rounded-3xl px-6 py-7 text-white">
               <div className="space-y-1">
                 <h2 className="text-sm font-semibold">
                   {weatherData.timezone}
                 </h2>
                 <p className="text-xs opacity-90">
-                  Today, May 17 2024 | {weatherData.current.dt}
+                  Today. {formatDate(weatherData.current.dt)}
                 </p>
               </div>
 
-              <div className="flex flex-col items-center mt-5">
-                <img
-                  src={`https://openweathermap.org/img/wn/${weatherData.current.weather[0].icon}@2x.png`}
-                  className="mb-8"
-                />
+              <div className="flex flex-col items-center">
+                <span className="w-full flex justify-center mt-5 mb-8">
+                  {renderWeatherIcon(weatherData.current.weather[0].icon, 200)}
+                </span>
                 <span className="text-6xl font-bold mb-3">
                   {weatherData.current.temp}°
                 </span>
@@ -79,17 +150,14 @@ function App() {
 
             {/* Hourly Forecast */}
             <div className="flex justify-between mt-4 px-2.5">
-              {weatherData.hourly.map((time, index) => {
+              {weatherData.hourly.slice(0, 5).map((time, index) => {
                 return (
                   <div key={index} className="flex flex-col items-center">
                     <span className="flex items-center justify-center w-14 h-14 mb-3 rounded-full bg-gray-100">
-                      <img
-                        src={`https://openweathermap.org/img/wn/${time.weather[0].icon}@2x.png`}
-                        className="text-gray-600"
-                      />
+                      {renderWeatherIcon(time.weather[0].icon)}
                     </span>
                     <span className="mb-1 text-xs text-gray-600 font-bold">
-                      {time.dt}
+                      {index === 0 ? "Now" : formatTime(time.dt)}
                     </span>
                     <span className="text-xs">{time.temp}°</span>
                   </div>
