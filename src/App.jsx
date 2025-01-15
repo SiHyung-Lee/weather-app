@@ -14,8 +14,8 @@ import {
 const API_KEY = "1c6040609dd62a847ede395d2b820d43";
 const API_HOST = "http://api.openweathermap.org";
 const API_ENDPOINTS = {
-  geo: "/geo/1.0/direct",
-  weather: "/data/3.0/onecall",
+  GEO: "/geo/1.0/direct",
+  WEATHER: "/data/3.0/onecall",
 };
 
 function formatDate(timestamp) {
@@ -80,20 +80,19 @@ function renderWeatherIcon(iconCode, size = 30) {
 
 function App() {
   const [city, setCity] = useState("london");
-  // const [coord, setCoord] = useState({ lat: 37.566535, lon: 126.9779692 }); // seoul
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchLocationData = async (city) => {
     const response = await fetch(
-      `${API_HOST}${API_ENDPOINTS.geo}?q=${city}&limit=5&appid=${API_KEY}`,
+      `${API_HOST}${API_ENDPOINTS.GEO}?q=${city}&limit=5&appid=${API_KEY}`,
     );
     return response.json();
   };
 
   const fetchWeatherData = async (lat, lon) => {
     const response = await fetch(
-      `${API_HOST}${API_ENDPOINTS.weather}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`,
+      `${API_HOST}${API_ENDPOINTS.WEATHER}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`,
     );
     return response.json();
   };
@@ -101,8 +100,6 @@ function App() {
   const loadWeatherData = async () => {
     try {
       const [locationData] = await fetchLocationData(city);
-      // setCoord(locationData);
-
       const weatherData = await fetchWeatherData(
         locationData.lat,
         locationData.lon,
