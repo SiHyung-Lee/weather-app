@@ -10,6 +10,7 @@ import {
   CloudLightning,
   CloudSnow,
 } from "lucide-react";
+import error from "eslint-plugin-react/lib/util/error.js";
 
 const API_KEY = "1c6040609dd62a847ede395d2b820d43";
 const API_HOST = "http://api.openweathermap.org";
@@ -79,28 +80,29 @@ function renderWeatherIcon(iconCode, size = 30) {
 }
 
 function App() {
-  const [city, setCity] = useState("london");
+  const [city, setCity] = useState("");
+  const [coord, setCoord] = useState({ lat: 51.5072, lon: -0.1275 }); // london
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchLocationData = async (city) => {
+  const getLocationData = async (city) => {
     const response = await fetch(
       `${API_HOST}${API_ENDPOINTS.GEO}?q=${city}&limit=5&appid=${API_KEY}`,
     );
     return response.json();
   };
 
-  const fetchWeatherData = async (lat, lon) => {
+  const getWeatherData = async (lat = coord.lat, lon = coord.lon) => {
     const response = await fetch(
       `${API_HOST}${API_ENDPOINTS.WEATHER}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`,
     );
     return response.json();
   };
 
-  const loadWeatherData = async () => {
+  const useWeatherData = async (city) => {
     try {
-      const [locationData] = await fetchLocationData(city);
-      const weatherData = await fetchWeatherData(
+      const [locationData] = await getLocationData(city);
+      const weatherData = await getWeatherData(
         locationData.lat,
         locationData.lon,
       );
@@ -112,8 +114,26 @@ function App() {
     }
   };
 
+  const init = async () => {
+    try {
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { latitude, longitude } = position.coords;
+        setCoord({ latitude, longitude });
+        console.log(latitude, longitude);
+      });
+
+      const weatherData = await getWeatherData(coord.lat, coord.lon);
+      setWeatherData(weatherData);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    loadWeatherData();
+    init();
+    // useWeatherData("new york");
   }, []);
 
   return (
