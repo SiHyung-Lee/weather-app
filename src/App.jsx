@@ -116,13 +116,14 @@ function App() {
 
   const init = async () => {
     try {
-      navigator.geolocation.getCurrentPosition((position) => {
-        const { latitude, longitude } = position.coords;
-        setCoord({ latitude, longitude });
-        console.log(latitude, longitude);
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
       });
 
-      const weatherData = await getWeatherData(coord.lat, coord.lon);
+      const { latitude, longitude } = position.coords;
+      setCoord({ lat: latitude, lon: longitude });
+
+      const weatherData = await getWeatherData(latitude, longitude);
       setWeatherData(weatherData);
     } catch (error) {
       console.error("Error fetching weather data:", error);
@@ -133,7 +134,6 @@ function App() {
 
   useEffect(() => {
     init();
-    // useWeatherData("new york");
   }, []);
 
   return (
