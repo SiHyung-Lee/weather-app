@@ -10,10 +10,9 @@ import {
   CloudLightning,
   CloudSnow,
 } from "lucide-react";
-import error from "eslint-plugin-react/lib/util/error.js";
 
 const API_KEY = "1c6040609dd62a847ede395d2b820d43";
-const API_HOST = "http://api.openweathermap.org";
+const API_HOST = "https://api.openweathermap.org";
 const API_ENDPOINTS = {
   GEO: "/geo/1.0/direct",
   WEATHER: "/data/3.0/onecall",
