@@ -1,102 +1,12 @@
 import { useEffect, useState } from "react";
-import {
-  Ellipsis,
-  Sun,
-  Cloud,
-  Cloudy,
-  CloudSun,
-  CloudSunRain,
-  CloudRain,
-  CloudLightning,
-  CloudSnow,
-} from "lucide-react";
-
-const API_KEY = "1c6040609dd62a847ede395d2b820d43";
-const API_HOST = "https://api.openweathermap.org";
-const API_ENDPOINTS = {
-  GEO: "/geo/1.0/direct",
-  WEATHER: "/data/3.0/onecall",
-};
-
-function formatDate(timestamp) {
-  const date = new Date(timestamp * 1000);
-  const options = {
-    month: "short",
-    day: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  };
-  const dateString = date.toLocaleString("en-US", options).replace(/,/g, "");
-  const [month, day, year, time, meridian] = dateString.split(" "); // 공백으로 분리
-  return (
-    <>
-      {month} {day} {year} <span className="mx-0.5">|</span> {time}
-      {meridian}
-    </>
-  );
-}
-
-function formatTime(timestamp) {
-  const date = new Date(timestamp * 1000);
-  const options = {
-    hour: "numeric",
-    hour12: true,
-  };
-  const dateString = date.toLocaleString("en-US", options).replace(/,/g, "");
-  const [time, meridian] = dateString.split(" "); // 공백으로 분리
-  return (
-    <>
-      {time}
-      {meridian.toLowerCase()}
-    </>
-  );
-}
-
-function renderWeatherIcon(iconCode, size = 30) {
-  const iconMapping = {
-    "01d": <Sun size={size} />,
-    "02d": <CloudSun size={size} />,
-    "03d": <Cloud size={size} />,
-    "04d": <Cloudy size={size} />,
-    "09d": <CloudRain size={size} />,
-    "10d": <CloudSunRain size={size} />,
-    "11d": <CloudLightning size={size} />,
-    "13d": <CloudSnow size={size} />,
-    "50d": <CloudSun size={size} />,
-    "01n": <Sun size={size} />,
-    "02n": <CloudSun size={size} />,
-    "03n": <Cloud size={size} />,
-    "04n": <Cloudy size={size} />,
-    "09n": <CloudRain size={size} />,
-    "10n": <CloudSunRain size={size} />,
-    "11n": <CloudLightning size={size} />,
-    "13n": <CloudSnow size={size} />,
-    "50n": <CloudSun size={size} />,
-  };
-  return iconMapping[iconCode];
-}
+import { getLocationData, getWeatherData } from "./api/weather";
+import { formatDate, formatTime } from "./utils/dateFormatter";
+import { renderWeatherIcon } from "./components/weatherIcon";
+import { Ellipsis } from "lucide-react";
 
 function App() {
-  const [city, setCity] = useState("");
-  const [coord, setCoord] = useState({ lat: 51.5072, lon: -0.1275 }); // london
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
-  const getLocationData = async (city) => {
-    const response = await fetch(
-      `${API_HOST}${API_ENDPOINTS.GEO}?q=${city}&limit=5&appid=${API_KEY}`,
-    );
-    return response.json();
-  };
-
-  const getWeatherData = async (lat = coord.lat, lon = coord.lon) => {
-    const response = await fetch(
-      `${API_HOST}${API_ENDPOINTS.WEATHER}?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`,
-    );
-    return response.json();
-  };
 
   const useWeatherData = async (city) => {
     try {
@@ -120,8 +30,6 @@ function App() {
       });
 
       const { latitude, longitude } = position.coords;
-      setCoord({ lat: latitude, lon: longitude });
-
       const weatherData = await getWeatherData(latitude, longitude);
       setWeatherData(weatherData);
     } catch (error) {
