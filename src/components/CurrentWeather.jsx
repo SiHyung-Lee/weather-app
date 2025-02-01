@@ -2,7 +2,6 @@ import { formatDate } from "../utils/dateFormatter";
 import { renderWeatherIcon } from "./weatherIcon";
 
 export const CurrentWeather = ({ weatherData }) => {
-  console.log(weatherData);
   return (
     <div className="bg-yellow-400 rounded-3xl px-6 py-7 text-white">
       <div className="space-y-1">
