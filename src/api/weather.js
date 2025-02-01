@@ -21,5 +21,7 @@ export const getWeatherData = async (lat, lon) => {
     return await response.json();
   } catch (error) {
     throw new Error(`Weather API Error: ${error.message}`);
+  } finally {
+    console.log("finally");
   }
 };
