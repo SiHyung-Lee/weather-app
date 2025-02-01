@@ -5,7 +5,7 @@ export const getLocationData = async (city) => {
   const response = await fetch(
     `${API_HOST}/geo/1.0/direct?q=${city}&limit=5&appid=${API_KEY}`
   );
-  return response.json();
+  return await response.json();
 };
 
 export const getWeatherData = async (lat, lon) => {

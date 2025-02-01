@@ -5,8 +5,13 @@ import { HourlyForecast } from "./components/HourlyForecast";
 import { useWeather } from "./hooks/useWeather";
 
 function App() {
-  const { weatherData, isLoading, error, getCurrentLocationWeather } =
-    useWeather();
+  const {
+    weatherData,
+    isLoading,
+    error,
+    getCurrentLocationWeather,
+    setLocationWeather,
+  } = useWeather();
 
   useEffect(() => {
     getCurrentLocationWeather();
@@ -31,7 +36,7 @@ function App() {
   return (
     <div className="min-h-screen p-4">
       <div className="max-w-md w-full mx-auto space-y-4">
-        <Header />
+        <Header setLocationWeather={setLocationWeather} />
         <CurrentWeather weatherData={weatherData} />
         <HourlyForecast weatherData={weatherData} />
       </div>

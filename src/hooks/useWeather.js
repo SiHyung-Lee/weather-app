@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { getWeatherData } from '../api/weather';
+import { useState } from "react";
+import { getLocationData, getWeatherData } from "../api/weather";
 
 export const useWeather = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -24,6 +24,13 @@ export const useWeather = () => {
     }
   };
 
+  const setLocationWeather = async (location) => {
+    const locationData = await getLocationData(location);
+    const { lat, lon } = locationData[0];
+    const data = await getWeatherData(lat, lon);
+    setWeatherData(data);
+  };
+
   const fetchWeatherByLocation = async (lat, lon) => {
     try {
       setIsLoading(true);
@@ -39,6 +46,7 @@ export const useWeather = () => {
   };
 
   return {
+    setLocationWeather,
     weatherData,
     isLoading,
     error,
