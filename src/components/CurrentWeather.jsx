@@ -1,6 +1,5 @@
-import PropTypes from "prop-types";
 import { formatDate } from "../utils/dateFormatter";
-import { renderWeatherIcon } from "./weatherIcon";
+import { renderWeatherIcon } from "./WeatherIcon";
 
 export const CurrentWeather = ({ weatherData }) => {
   return (
@@ -26,21 +25,4 @@ export const CurrentWeather = ({ weatherData }) => {
       </div>
     </div>
   );
-};
-
-CurrentWeather.propTypes = {
-  weatherData: PropTypes.shape({
-    timezone: PropTypes.string.isRequired,
-    current: PropTypes.shape({
-      dt: PropTypes.number.isRequired,
-      temp: PropTypes.number.isRequired,
-      weather: PropTypes.arrayOf(
-        PropTypes.shape({
-          icon: PropTypes.string.isRequired,
-          main: PropTypes.string.isRequired,
-          description: PropTypes.string.isRequired,
-        })
-      ).isRequired,
-    }).isRequired,
-  }).isRequired,
 };

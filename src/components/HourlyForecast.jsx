@@ -1,5 +1,5 @@
 import { formatTime } from "../utils/dateFormatter";
-import { renderWeatherIcon } from "./weatherIcon";
+import { renderWeatherIcon } from "./WeatherIcon";
 
 export const HourlyForecast = ({ weatherData }) => {
   return (
