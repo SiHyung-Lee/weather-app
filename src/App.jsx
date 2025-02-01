@@ -1,27 +1,11 @@
-import { useEffect, useState } from "react";
-import { getLocationData, getWeatherData } from "./api/weather";
+import { useEffect } from "react";
 import { Header } from "./components/Header";
 import { CurrentWeather } from "./components/CurrentWeather";
 import { HourlyForecast } from "./components/HourlyForecast";
+import { useWeather } from "./hooks/useWeather";
 
 function App() {
-  const [weatherData, setWeatherData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const useWeatherData = async (city) => {
-    try {
-      const [locationData] = await getLocationData(city);
-      const weatherData = await getWeatherData(
-        locationData.lat,
-        locationData.lon
-      );
-      setWeatherData(weatherData);
-    } catch (error) {
-      console.error("Error fetching weather data:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const { weatherData, isLoading, fetchWeatherData } = useWeather();
 
   const init = async () => {
     try {
@@ -34,8 +18,6 @@ function App() {
       setWeatherData(weatherData);
     } catch (error) {
       console.error("Error fetching weather data:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
