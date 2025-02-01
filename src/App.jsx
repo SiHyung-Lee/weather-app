@@ -5,42 +5,37 @@ import { HourlyForecast } from "./components/HourlyForecast";
 import { useWeather } from "./hooks/useWeather";
 
 function App() {
-  const { weatherData, isLoading, fetchWeatherData } = useWeather();
-
-  const init = async () => {
-    try {
-      const position = await new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
-
-      const { latitude, longitude } = position.coords;
-      const weatherData = await getWeatherData(latitude, longitude);
-      setWeatherData(weatherData);
-    } catch (error) {
-      console.error("Error fetching weather data:", error);
-    }
-  };
+  const { weatherData, isLoading, error, getCurrentLocationWeather } =
+    useWeather();
 
   useEffect(() => {
-    init();
+    getCurrentLocationWeather();
   }, []);
 
+  if (error) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl text-red-500">Error: {error}</div>
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-xl">Loading...</div>
+      </div>
+    );
+  }
+
   return (
-    <>
-      {isLoading ? (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-xl">Loading...</div>
-        </div>
-      ) : (
-        <div className="min-h-screen p-4">
-          <div className="max-w-md w-full space-y-4">
-            <Header />
-            <CurrentWeather weatherData={weatherData} />
-            <HourlyForecast weatherData={weatherData} />
-          </div>
-        </div>
-      )}
-    </>
+    <div className="min-h-screen p-4">
+      <div className="max-w-md w-full mx-auto space-y-4">
+        <Header />
+        <CurrentWeather weatherData={weatherData} />
+        <HourlyForecast weatherData={weatherData} />
+      </div>
+    </div>
   );
 }
 

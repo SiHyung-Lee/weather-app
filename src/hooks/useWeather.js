@@ -1,19 +1,37 @@
 import { useState } from 'react';
-import { getLocationData, getWeatherData } from '../api/weather';
+import { getWeatherData } from '../api/weather';
 
 export const useWeather = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const fetchWeatherData = async (city) => {
+  const getCurrentLocationWeather = async () => {
     try {
-      const [locationData] = await getLocationData(city);
-      const weather = await getWeatherData(
-        locationData.lat,
-        locationData.lon
-      );
-      setWeatherData(weather);
+      const position = await new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject);
+      });
+
+      const { latitude, longitude } = position.coords;
+      const data = await getWeatherData(latitude, longitude);
+      setWeatherData(data);
+      setError(null);
     } catch (error) {
+      setError(error.message);
+      console.error("Error fetching weather data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchWeatherByLocation = async (lat, lon) => {
+    try {
+      setIsLoading(true);
+      const data = await getWeatherData(lat, lon);
+      setWeatherData(data);
+      setError(null);
+    } catch (error) {
+      setError(error.message);
       console.error("Error fetching weather data:", error);
     } finally {
       setIsLoading(false);
@@ -23,6 +41,8 @@ export const useWeather = () => {
   return {
     weatherData,
     isLoading,
-    fetchWeatherData
+    error,
+    getCurrentLocationWeather,
+    fetchWeatherByLocation,
   };
 };
