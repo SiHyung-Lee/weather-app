@@ -1,8 +1,64 @@
-# React + Vite
+# 날씨 앱 프로젝트
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+🌐 **데모 링크**: [Weather App Demo](https://weather-app-roan-chi-37.vercel.app/)
 
-Currently, two official plugins are available:
+## 프로젝트 개요
+이 프로젝트는 실시간 날씨 정보를 제공하는 현대적인 웹 애플리케이션입니다. React와 Vite를 기반으로 구축되었으며, 사용자 친화적인 인터페이스를 제공합니다. Vercel을 통해 배포되어 누구나 쉽게 접근하고 사용할 수 있습니다.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 주요 기능
+- **현재 위치 날씨**: 사용자의 현재 위치를 기반으로 실시간 날씨 정보 제공
+- **위치 검색**: 특정 지역의 날씨 정보 검색 기능
+- **시간별 날씨 예보**: 상세한 시간별 날씨 예보 정보 제공
+- **반응형 디자인**: 모든 디바이스에서 최적화된 사용자 경험 제공
+
+## 기술 스택
+### 프론트엔드
+- **React 18.3.1**: 사용자 인터페이스 구축
+- **Vite 5.4.10**: 빠른 개발 환경과 빌드 도구
+- **TailwindCSS 3.4.17**: 반응형 스타일링
+- **Lucide React 0.471.1**: 아이콘 컴포넌트
+
+### 개발 및 배포
+- **ESLint**: 코드 품질 관리
+- **PostCSS**: CSS 처리 및 최적화
+- **TypeScript**: 타입 지원 (@types/react, @types/react-dom)
+- **Vercel**: 애플리케이션 호스팅 및 배포
+
+## 시작하기
+1. **프로젝트 설치**
+```bash
+npm install
+```
+
+2. **개발 서버 실행**
+```bash
+npm run dev
+```
+
+3. **프로덕션 빌드**
+```bash
+npm run build
+```
+
+## 기여 방법
+1. 이 저장소를 포크합니다
+2. 새로운 기능 브랜치를 생성합니다
+3. 변경사항을 커밋합니다
+4. 브랜치에 푸시합니다
+5. Pull Request를 생성합니다
+
+## 개발 환경 설정
+- Node.js 및 npm이 설치되어 있어야 합니다
+- 날씨 API 키가 필요합니다 (환경 변수로 설정)
+
+## 향후 계획
+- 일주일 날씨 예보 기능 추가
+- 날씨 알림 기능 구현
+- 다국어 지원
+- 날씨 데이터 시각화 개선
+
+## 라이센스
+이 프로젝트는 MIT 라이센스 하에 있습니다.
+
+## 데모 사이트
+프로젝트의 실제 동작을 확인하고 싶으시다면 [여기](https://weather-app-roan-chi-37.vercel.app/)를 방문해주세요.
