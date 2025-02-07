@@ -78,6 +78,3 @@ VITE_API_KEY=[날씨 API 키]
 
 ## 라이센스
 이 프로젝트는 MIT 라이센스 하에 있습니다.
-
-## 데모 사이트
-프로젝트의 실제 동작을 확인하고 싶으시다면 [여기](https://weather-app-roan-chi-37.vercel.app/)를 방문해주세요.
