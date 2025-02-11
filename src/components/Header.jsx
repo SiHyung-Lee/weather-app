@@ -8,10 +8,16 @@ export const Header = ({ setLocationWeather }) => {
     setValue(e.target.value);
   };
 
+  const handleOnSubmit = (event) => {
+    event.preventDefault();
+    setLocationWeather(value);
+    setValue("");
+  };
+
   return (
     <div className="flex justify-between items-center">
       <h1 className="text-2xl font-bold">forecazt</h1>
-      <div className="flex justify-end w-1/2">
+      <form onSubmit={handleOnSubmit} className="flex justify-end w-1/2">
         <input
           type="text"
           placeholder="Search for places"
@@ -19,12 +25,10 @@ export const Header = ({ setLocationWeather }) => {
           onChange={handleOnChange}
           value={value}
         />
-        <button
-          className="text-gray-600 align-middle"
-          onClick={() => setLocationWeather(value)}>
+        <button className="text-gray-600 align-middle">
           <Search size={25} />
         </button>
-      </div>
+      </form>
     </div>
   );
 };
